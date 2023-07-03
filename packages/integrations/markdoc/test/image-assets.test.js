@@ -39,6 +39,15 @@ describe('Markdoc - Image assets', () => {
 				/\/_image\?href=.*%2Fsrc%2Fassets%2Frelative%2Foar.jpg%3ForigWidth%3D420%26origHeight%3D630%26origFormat%3Djpg&f=webp/
 			);
 		});
+		
+		it('treats filename as relative path', async () => {
+			const res = await baseFixture.fetch('/');
+			const html = await res.text();
+			const { document } = parseHTML(html);
+			expect(document.querySelector('#filename > img')?.src).to.match(
+				/\/_image\?href=.*%2Fsrc%2Fcontent%2Fdocs%2Fintro%2Fcat.jpg%3ForigWidth%3D420%26origHeight%3D630%26origFormat%3Djpg&f=webp/
+			);
+		});
 
 		it('transforms aliased image paths to optimized path', async () => {
 			const res = await baseFixture.fetch('/');
@@ -65,6 +74,13 @@ describe('Markdoc - Image assets', () => {
 			const html = await baseFixture.readFile('/index.html');
 			const { document } = parseHTML(html);
 			expect(document.querySelector('#relative > img')?.src).to.match(/^\/_astro\/oar.*\.webp$/);
+		});
+
+
+		it('treats filename as relative path', async () => {
+			const html = await baseFixture.readFile('/index.html');
+			const { document } = parseHTML(html);
+			expect(document.querySelector('#filename > img')?.src).to.match(/^\/_astro\/cat.*\.webp$/);
 		});
 
 		it('transforms aliased image paths to optimized path', async () => {

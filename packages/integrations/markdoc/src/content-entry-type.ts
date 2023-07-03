@@ -182,6 +182,9 @@ async function emitOptimizedImages(
 			typeof node.attributes.src === 'string' &&
 			shouldOptimizeImage(node.attributes.src)
 		) {
+			// Treat filenames as relative paths
+			if (path.parse(node.attributes.src).base == node.attributes.src) node.attributes.src = "./" + node.attributes.src;
+			
 			// Attempt to resolve source with Vite.
 			// This handles relative paths and configured aliases
 			const resolved = await ctx.pluginContext.resolve(node.attributes.src, ctx.filePath);
